@@ -1,0 +1,65 @@
+{include="header2"}
+
+<form action="index.php?page=enviar_sms&id={$fsc->id}&{$fsc->documento}=TRUE" method="post" class="form">
+   <input type="hidden" name="enviar" value="TRUE"/>
+   <div class="modal-header">
+      <h4 class="modal-title">Enviar SMS</h4>
+   </div>
+   <div class="modal-body">
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="form-group">
+                  <div class="input-group">
+                     <span class="input-group-addon">Proveedor</span>
+                     <select name="proveedor" class="form-control">
+                        {loop="$fsc->provsms->all()"}
+                        <option value="{$value->idproveedor}">{$value->descripcion}</option>
+                        {else}
+                        <option value="">Sin resultados</option>
+                        {/loop}
+                     </select>
+                  </div>
+            </div>
+            <div class="input-group">
+               <span class="input-group-addon glyphicon glyphicon-phone">&nbsp;</span>
+               <input class="form-control" type="text" name="telefono" required value="+34{$fsc->cliente->telefono1}" autocomplete="off" maxlength="12" minlength="12"/>
+            </div>
+            <br />
+            <div class="from-group">
+               <textarea class="form-control" id="mensaje" name="mensaje" rows="6" required="">Hola {$fsc->cliente->nombre}</textarea>
+               <ul id="sms-counter"class="list-group">
+                  <li class="list-group-item">
+                     <span class="badge"><span class="length"></span></span>
+                     Longitud
+                  </li>
+                  <li class="list-group-item">
+                     <span class="badge"><span class="messages"></span></span>
+                     Mensajes:
+                  </li>
+                  <li class="list-group-item">
+                     <span class="badge"><span class="per_message"></span></span>
+                     Cada mensaje:
+                  </li>
+                  <li class="list-group-item">
+                     <span class="badge"><span class="remaining"></span></span>
+                     Quedan:
+                  </li>
+               </ul>
+            </div>
+            <div class="form-group" align="right">
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-phone"></span>
+                  <span>&nbsp; Enviar</span>
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</form>
+
+<script type="text/javascript" src="plugins/sms/view/js/sms_counter.js"></script>
+<script>
+   $('#mensaje').countSms('#sms-counter');
+</script>
+
+{include="footer2"}

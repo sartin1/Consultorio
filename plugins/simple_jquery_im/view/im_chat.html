@@ -1,0 +1,30 @@
+   <!-- Añadidos para Simple jQuery IM -->
+   <div id="styleSelector">
+      <div class="selector-toggle">
+         <a href="javascript:void(0)"></a>
+      </div>
+      <ul>
+         <li>
+            <p class="selector-title">Contactos</p>
+         </li>
+         <li class="theme-option">
+            {loop="$fsc->user->all()"}
+               {if condition="$value->nick!=$fsc->user->nick"}
+                  {if condition="$value->have_access_to('im_chat')"}
+                  <span class="sub-title">
+                     <a href="javascript:void(0)" onclick="javascript:chatWith('{$value->nick}')">{$value->nick}<br/></a>
+                  </span>
+                  {/if}
+               {/if}
+            {/loop}
+            {if="count($fsc->user->all())==1"}
+               <span class="sub-title">
+                  No tienes contactos porque no hay más usuarios en el sistema.<br/><br/>
+                  Si quieres probar este plugin, da de alta algún usuario más y asociale un empleado.<br/><br/>
+                  Recuerda que necesitas iniciar sesión desde otro navegador o equipo.
+               </span>
+            {/if}
+         </li>
+      </ul>
+   </div>
+   <!-- Fin añadidos para Simple jQuery IM -->

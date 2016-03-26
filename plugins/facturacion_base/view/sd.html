@@ -1,0 +1,69 @@
+<script type="text/javascript" src="plugins/facturacion_base/view/provincias.js"></script>
+<script type="text/javascript" src="plugins/facturacion_base/view/nueva_venta.js"></script>
+<script type="text/javascript">
+   fs_nf0 = {#FS_NF0#};
+   all_impuestos = {function="json_encode($fsc->impuesto->all())"};
+   all_series = {function="json_encode($fsc->serie->all())"};
+   cliente = {function="json_encode($fsc->cliente_s)"};
+   nueva_venta_url = '{$fsc->url()}';
+   kiwimaru_url = '{#FS_COMMUNITY_URL#}/index.php?page=kiwimaru';
+   
+   $(document).ready(function() {
+      usar_serie();
+      usar_almacen();
+      recalcular();
+   });
+      function enter2tab(e) {
+       if (e.keyCode == 13) {
+           cb = parseInt($(this).attr('tabindex'));
+    
+           if ($(':input[tabindex=\'' + (cb + 1) + '\']') != null) {
+               $(':input[tabindex=\'' + (cb + 1) + '\']').focus();
+               $(':input[tabindex=\'' + (cb + 1) + '\']').select();
+               e.preventDefault();
+    
+               return false;
+           }
+       }
+   }
+       $(document).ready(function () {
+        $("#atotal").keyup(function () {
+            var value = $(this).val();
+            $("#input2").val(value);
+        });
+    });
+</script>
+<body>
+<form action="https://www.mercadopago.com/mla/buybutton" method="get" target="MercadoPago">
+
+<br />
+
+<input name="acc_id" type="hidden" value="600861791" />
+
+<input name="url_cancel" type="hidden" value="" />
+
+<input name="item_id" type="hidden" value="1234" />
+
+<input name="name" type="hidden" value="Compra en Empresa" />
+
+<input name="currency" type="hidden" value="ARG" />
+
+<input name="price" value="Coloque su precio." />
+
+<input name="url_process" type="hidden" value="http://www.mercadopago.com" />
+
+<input name="url_succesfull" type="hidden" value="localhost" />
+
+<input name="shipping_cost" type="hidden" value="" />
+
+<input name="enc" type="hidden" value="X5As00H5NHVc3gYSQaxqzzSlu2A%3D" />
+
+<input name="ship_cost_mode" type="hidden" value="" />
+
+<input name="op_retira" type="hidden" value="O" />
+
+<input name="extra_part" type="hidden" value="localhost" />
+<hr>
+<input alt="Cobrar con MercadoPago" border="0" src="/plugins/sin.png" type="image" />
+ </form>
+</body>

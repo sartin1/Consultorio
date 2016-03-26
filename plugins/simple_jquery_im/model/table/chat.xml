@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : chat.xml
+    Description:
+        Estructura de la tabla chat.
+-->
+<tabla>
+   <columna>
+      <nombre>id</nombre>
+      <tipo>serial</tipo>
+      <nulo>NO</nulo>
+      <defecto>nextval('chat_id_seq'::regclass)</defecto>
+   </columna>
+   <columna>
+      <nombre>from_user</nombre>
+      <tipo>varchar(255)</tipo>
+      <nulo>NO</nulo>
+   </columna>
+   <columna>
+      <nombre>to_user</nombre>
+      <tipo>varchar(255)</tipo>
+      <nulo>NO</nulo>
+   </columna>
+   <columna>
+      <nombre>message</nombre>
+      <tipo>text</tipo>
+      <nulo>NO</nulo>
+   </columna>
+   <columna>
+      <nombre>sent_on</nombre>
+      <tipo>timestamp without time zone</tipo>
+      <nulo>NO</nulo>
+   </columna>
+   <columna>
+      <nombre>recd</nombre>
+      <tipo>integer</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>
+   <restriccion>
+      <nombre>chat_id_pkey</nombre>
+      <consulta>PRIMARY KEY (id)</consulta>
+   </restriccion>
+</tabla>
