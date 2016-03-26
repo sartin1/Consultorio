@@ -1,9 +1,10 @@
 Options -Indexes
 
 <IfModule mod_php5.c>
+php_value max_execution_time 5000
    php_value max_input_vars 5000
-   php_value post_max_size 99M
-   php_value upload_max_filesize 99M
+   php_value post_max_size 200M
+   php_value upload_max_filesize 200M
 </IfModule>
 
 # permite todos los acceso exceptuando los expuestos a continuación
