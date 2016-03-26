@@ -638,8 +638,8 @@ $updater = new fs_updater();
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" >
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <title>Actualizador de FacturaScripts</title>
-      <meta name="description" content="Script de actualización de FacturaScripts." />
+      <title>Actualizador de Sartin Consultorios</title>
+      <meta name="description" content="Actualizador de Sartin Consultorios." />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="generator" content="FacturaScripts" />
       <link rel="shortcut icon" href="view/img/favicon.ico" />
@@ -656,7 +656,7 @@ $updater = new fs_updater();
                      <a href="index.php?page=admin_home&updated=TRUE" class="btn btn-xs btn-default">
                         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
                      </a>
-                     Actualizador de FacturaScripts
+                     Actualizador de Sartin Consultorios
                   </h1>
                </div>
             </div>
@@ -685,10 +685,7 @@ $updater = new fs_updater();
          <div class="row">
             <div class="col-sm-12">
                <p class="help-block">
-                  Este actualizador permite actualizar <b>tanto el núcleo</b> de FacturaScripts
-                  <b>como sus plugins</b>, incluso los de pago y los privados.
-                  Si hay una actualización del núcleo tendrás que actualizar antes de poder ver si
-                  también hay actualizaciones de plugins.
+                  Este actualizador permite actualizar su sistema, es recomendable utilizarlo periodicamente para poder evitar fallos y ademas de algunas modificaciones solicitadas por usted. Saludos :)
                </p>
                <br/>
             </div>
@@ -702,12 +699,7 @@ $updater = new fs_updater();
                         <span class="hidden-xs">&nbsp; Actualizaciones</span>
                      </a>
                   </li>
-                  <li role="presentation">
-                     <a href="#opciones" aria-controls="opciones" role="tab" data-toggle="tab">
-                        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                        <span class="hidden-xs">&nbsp; Opciones</span>
-                     </a>
-                  </li>
+               
                </ul>
                <div class="tab-content">
                   <div role="tabpanel" class="tab-pane active" id="actualizaciones">
@@ -793,22 +785,7 @@ $updater = new fs_updater();
       }
       ?>
       <br/><br/>
-      <div class="container">
-         <div class="row">
-            <div class="col-sm-2">
-               <a href="https://www.facturascripts.com/promo" target="_blank" class="thumbnail">
-                  <img src='http://i.imgur.com/5XRa2Cm.png' alt="adminlte"/>
-               </a>
-            </div>
-            <div class="col-sm-10">
-               <p class="help-block">
-                  Hemos trabajado en un <b>nuevo diseño</b> para dar un aspecto más moderno a FacturaScripts,
-                  con un nuevo menú lateral, buscador integrado, más visibilidad del usuario,
-                  más y mejores iconos y un largo etcétera. Este es el resultado.
-               </p>
-            </div>
-         </div>
-      </div>
+      
       <div class="text-center">;-)</div>
       <?php
       if(!FS_DEMO)
