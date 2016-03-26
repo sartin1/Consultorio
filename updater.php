@@ -1,21 +1,4 @@
 <?php
-/*
- * This file is part of FacturaSctipts
- * Copyright (C) 2015  Carlos Garcia Gomez  neorazorx@gmail.com
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 if( !file_exists('config.php') )
 {
@@ -28,20 +11,29 @@ require_once 'base/fs_cache.php';
 class fs_updater
 {
    public $btn_fin;
-   private $download_list2;
    public $errores;
    public $mensajes;
-   private $plugin_updates;
+   public $plugins;
    public $tr_options;
    public $tr_updates;
+   public $version;
+   public $xid;
+   
+   private $cache;
+   private $download_list2;
+   private $plugin_updates;
    
    public function __construct()
    {
       $this->btn_fin = FALSE;
+      $this->cache = new fs_cache();
       $this->errores = '';
       $this->mensajes = '';
+      $this->plugins = array();
       $this->tr_options = '';
       $this->tr_updates = '';
+      $this->version = '';
+      $this->xid = '';
       
       if( isset($_COOKIE['user']) AND isset($_COOKIE['logkey']) )
       {
@@ -79,14 +71,13 @@ class fs_updater
             }
             else
                $this->errores = 'Error al guardar la clave.';
-            
-            
          }
          
          if($this->errores == '')
          {
             $version_actual = file_get_contents('VERSION');
-            $nueva_version = @$this->curl_get_contents('https://raw.githubusercontent.com/NeoRazorX/facturascripts_2015/master/VERSION');
+            $this->version = $version_actual;
+            $nueva_version = @$this->curl_get_contents('https://raw.githubusercontent.com/sartin1/Consultorio/master/VERSION');
             if( floatval($version_actual) < floatval($nueva_version) )
             {
                $this->tr_updates = '<tr>'
@@ -182,6 +173,12 @@ class fs_updater
                   $this->btn_fin = TRUE;
                }
             }
+            
+            $e = $this->cache->get_array('empresa');
+            if($e)
+            {
+               $this->xid = $e[0]['xid'];
+            }
          }
          else
          {
@@ -195,41 +192,48 @@ class fs_updater
    
    private function actualizar_nucleo()
    {
-      $url = 'https://github.com/NeoRazorX/facturascripts_2015/archive/master.zip';
+      $urls = array(
+          'https://github.com/sartin1/Consultorio/archive/master.zip',
+          'https://codeload.github.com/sartin1/Consultorio/zip/master'
+      );
       
-      if( @file_put_contents('update.zip', $this->curl_get_contents($url)) )
+      foreach($urls as $url)
       {
-         $zip = new ZipArchive();
-         $zip_status = $zip->open('update.zip');
-         
-         if($zip_status === TRUE)
+         if( @file_put_contents('update.zip', $this->curl_get_contents($url)) )
          {
-            $zip->extractTo('.');
-            $zip->close();
-            unlink('update.zip');
+            $zip = new ZipArchive();
+            $zip_status = $zip->open('update.zip');
             
-            /// eliminamos archivos antiguos
-            $this->delTree('base/');
-            $this->delTree('controller/');
-            $this->delTree('extras/');
-            $this->delTree('model/');
-            $this->delTree('raintpl/');
-            $this->delTree('view/');
-            
-            /// ahora hay que copiar todos los archivos de facturascripts-master a . y borrar
-            $this->recurse_copy('facturascripts_2015-master/', '.');
-            $this->delTree('facturascripts_2015-master/');
-            
-            /// limpiamos la caché
-            $this->clean_cache();
-            
-            $this->mensajes = 'Actualizado correctamente.';
+            if($zip_status === TRUE)
+            {
+               $zip->extractTo('.');
+               $zip->close();
+               unlink('update.zip');
+               
+               /// eliminamos archivos antiguos
+               $this->delTree('base/');
+               $this->delTree('controller/');
+               $this->delTree('extras/');
+               $this->delTree('model/');
+               $this->delTree('raintpl/');
+               $this->delTree('view/');
+               
+               /// ahora hay que copiar todos los archivos de facturascripts-master a . y borrar
+               $this->recurse_copy('Consultorio-master/', '.');
+               $this->delTree('Consultorio-master/');
+               
+               /// limpiamos la caché
+               $this->clean_cache();
+               
+               $this->mensajes = 'Actualizado correctamente.';
+               break;
+            }
+            else
+               $this->errores = 'Ha habido un error con el archivo update.zip. Código: '.$zip_status;
          }
          else
-            $this->errores = 'Ha habido un error con el archivo update.zip. Código: '.$zip_status;
+            $this->errores = 'Error al descargar el archivo zip.';
       }
-      else
-         $this->errores = 'Error al descargar el archivo zip.';
    }
    
    private function actualizar_plugin()
@@ -298,7 +302,7 @@ class fs_updater
    private function actualizar_plugin_pago()
    {
       $url = 'https://www.facturascripts.com/comm3/index.php?page=community_edit_plugin&id='.
-              $_GET['idplugin'].'&key='.$_GET['key'];
+              $_GET['idplugin'].'&xid='.$this->xid.'&key='.$_GET['key'];
       
       /// descargamos el zip
       if( @file_put_contents('update.zip', $this->curl_get_contents($url)) )
@@ -336,14 +340,20 @@ class fs_updater
               $_GET['idplugin'].'&name='.$_GET['name'].'">¿Clave incorrecta?</a>';
    }
 
-   private function recurse_copy($src, $dst) {
+   private function recurse_copy($src, $dst)
+   {
       $dir = opendir($src);
       @mkdir($dst);
-      while (false !== ( $file = readdir($dir))) {
-         if (( $file != '.' ) && ( $file != '..' )) {
-            if (is_dir($src . '/' . $file)) {
+      while(false !== ( $file = readdir($dir)))
+      {
+         if(( $file != '.' ) && ( $file != '..' ))
+         {
+            if(is_dir($src . '/' . $file))
+            {
                $this->recurse_copy($src . '/' . $file, $dst . '/' . $file);
-            } else {
+            }
+            else
+            {
                copy($src . '/' . $file, $dst . '/' . $file);
             }
          }
@@ -351,23 +361,30 @@ class fs_updater
       closedir($dir);
    }
 
-   private function delTree($dir) {
+   private function delTree($dir)
+   {
       $files = array_diff(scandir($dir), array('.', '..'));
-      foreach ($files as $file) {
+      foreach($files as $file)
+      {
          (is_dir("$dir/$file")) ? $this->delTree("$dir/$file") : unlink("$dir/$file");
       }
       return rmdir($dir);
    }
 
-   private function __getAllSubDirectories($base_dir) {
+   private function __getAllSubDirectories($base_dir)
+   {
       $directories = array();
 
-      foreach (scandir($base_dir) as $file) {
-         if ($file == '.' || $file == '..')
+      foreach(scandir($base_dir) as $file)
+      {
+         if($file == '.' || $file == '..')
+         {
             continue;
+         }
 
          $dir = $base_dir . DIRECTORY_SEPARATOR . $file;
-         if (is_dir($dir)) {
+         if( is_dir($dir) )
+         {
             $directories[] = $dir;
             $directories = array_merge($directories, $this->__getAllSubDirectories($dir));
          }
@@ -376,11 +393,14 @@ class fs_updater
       return $directories;
    }
 
-   private function __areWritable($dirlist) {
+   private function __areWritable($dirlist)
+   {
       $notwritable = array();
 
-      foreach ($dirlist as $dir) {
-         if (!is_writable($dir)) {
+      foreach ($dirlist as $dir)
+      {
+         if( !is_writable($dir) )
+         {
             $notwritable[] = $dir;
          }
       }
@@ -388,6 +408,12 @@ class fs_updater
       return $notwritable;
    }
 
+   /**
+    * Descarga el contenido con curl o file_get_contents
+    * @param type $url
+    * @param type $timeout
+    * @return type
+    */
    private function curl_get_contents($url)
    {
       if( function_exists('curl_init') )
@@ -400,19 +426,64 @@ class fs_updater
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
          $data = curl_exec($ch);
          $info = curl_getinfo($ch);
-         curl_close($ch);
-
-         if($info['http_code'] == 302)
+         
+         if($info['http_code'] == 301 OR $info['http_code'] == 302)
          {
-            return file_get_contents($url);
+            $redirs = 0;
+            return $this->curl_redirect_exec($ch, $redirs);
          }
          else
+         {
+            curl_close($ch);
             return $data;
+         }
       }
       else
          return file_get_contents($url);
    }
-
+   
+   /**
+    * Función alternativa para cuando el followlocation falla.
+    * @param type $ch
+    * @param type $redirects
+    * @param type $curlopt_header
+    * @return type
+    */
+   private function curl_redirect_exec($ch, &$redirects, $curlopt_header = false)
+   {
+      curl_setopt($ch, CURLOPT_HEADER, true);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      $data = curl_exec($ch);
+      $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      
+      if($http_code == 301 || $http_code == 302)
+      {
+         list($header) = explode("\r\n\r\n", $data, 2);
+         $matches = array();
+         preg_match("/(Location:|URI:)[^(\n)]*/", $header, $matches);
+         $url = trim(str_replace($matches[1], "", $matches[0]));
+         $url_parsed = parse_url($url);
+         if( isset($url_parsed) )
+         {
+            curl_setopt($ch, CURLOPT_URL, $url);
+            $redirects++;
+            return $this->curl_redirect_exec($ch, $redirects, $curlopt_header);
+         }
+      }
+      
+      if($curlopt_header)
+      {
+         curl_close($ch);
+         return $data;
+      }
+      else
+      {
+         list(, $body) = explode("\r\n\r\n", $data, 2);
+         curl_close($ch);
+         return $body;
+      }
+   }
+   
    public function check_for_plugin_updates()
    {
       if( !isset($this->plugin_updates) )
@@ -433,6 +504,8 @@ class fs_updater
                    'idplugin' => NULL,
                    'private_key' => FALSE
                );
+               
+               $this->plugins[] = $plugin['name'];
                
                if( file_exists('plugins/' . $f . '/facturascripts.ini') )
                {
@@ -494,7 +567,10 @@ class fs_updater
                               }
                               else if( !file_exists('tmp/'.FS_TMP_NAME.'private_keys/') )
                               {
-                                 mkdir('tmp/'.FS_TMP_NAME.'private_keys/');
+                                 if( mkdir('tmp/'.FS_TMP_NAME.'private_keys/') )
+                                 {
+                                    file_put_contents('tmp/'.FS_TMP_NAME.'private_keys/.htaccess', 'Deny from all');
+                                 }
                               }
                               
                               $this->plugin_updates[] = $plugin;
@@ -576,7 +652,12 @@ $updater = new fs_updater();
          <div class="row">
             <div class="col-sm-12">
                <div class="page-header">
-                  <h1>Actualizador de FacturaScripts</h1>
+                  <h1>
+                     <a href="index.php?page=admin_home&updated=TRUE" class="btn btn-xs btn-default">
+                        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                     </a>
+                     Actualizador de FacturaScripts
+                  </h1>
                </div>
             </div>
          </div>
@@ -604,9 +685,10 @@ $updater = new fs_updater();
          <div class="row">
             <div class="col-sm-12">
                <p class="help-block">
-                  Este actualizador permite actualizar tanto el núcleo de FacturaScripts como sus plugins,
-                  incluso los de pago y los privados. Si hay una actualización del núcleo tendrás
-                  que actualizar antes de poder ver si hay también actualizaciones de plugins.
+                  Este actualizador permite actualizar <b>tanto el núcleo</b> de FacturaScripts
+                  <b>como sus plugins</b>, incluso los de pago y los privados.
+                  Si hay una actualización del núcleo tendrás que actualizar antes de poder ver si
+                  también hay actualizaciones de plugins.
                </p>
                <br/>
             </div>
@@ -710,6 +792,35 @@ $updater = new fs_updater();
          }
       }
       ?>
+      <br/><br/>
+      <div class="container">
+         <div class="row">
+            <div class="col-sm-2">
+               <a href="https://www.facturascripts.com/promo" target="_blank" class="thumbnail">
+                  <img src='http://i.imgur.com/5XRa2Cm.png' alt="adminlte"/>
+               </a>
+            </div>
+            <div class="col-sm-10">
+               <p class="help-block">
+                  Hemos trabajado en un <b>nuevo diseño</b> para dar un aspecto más moderno a FacturaScripts,
+                  con un nuevo menú lateral, buscador integrado, más visibilidad del usuario,
+                  más y mejores iconos y un largo etcétera. Este es el resultado.
+               </p>
+            </div>
+         </div>
+      </div>
       <div class="text-center">;-)</div>
+      <?php
+      if(!FS_DEMO)
+      {
+         $url = 'https://www.facturascripts.com/comm3/index.php?page=community_stats'
+                 . '&add=TRUE&version='.$updater->version.'&plugins='.join(',', $updater->plugins);
+         ?>
+         <div style="display: none;">
+            <iframe src="<?php echo $url; ?>" height="0"></iframe>
+         </div>
+         <?php
+      }
+      ?>
    </body>
 </html>
