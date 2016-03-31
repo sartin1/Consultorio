@@ -55,11 +55,14 @@
 
 <div class="well">
    <div class="page-header" style="margin-top: 0px;">
-      <h1>¡Bienvenido a FacturaScripts <?php echo $fsc->version();?>!</h1>
+      <h1>
+         Bienvenido a el sistema
+         <small><?php echo $fsc->version();?></small>
+      </h1>
    </div>
-   <p>
+   <p class="help-block">
       Ya tienes instalado el núcleo. Como ves, el núcleo permite gestionar páginas,
-      plugins y usuarios.
+      plugins y usuarios. Pulsa continuar para seguir con la instalación.
    </p>
    <a href="#" class="btn btn-sm btn-info" onclick="fs_marcar_todo();f_enable_pages.submit();">
       <span class="glyphicon glyphicon-ok"></span> &nbsp; Continuar
@@ -69,20 +72,20 @@
 
 <div class="well">
    <div class="page-header" style="margin-top: 0px;">
-      <h1>Plugins</h1>
+      <h1>
+         <i class="fa fa-puzzle-piece"></i> Plugins
+      </h1>
    </div>
-   <p>
+   <p class="help-block">
       El núcleo solamente se encarga de la gestión de usuarios, plugins y páginas.
       Para todo lo demás tienes los plugins.
       En la pestaña <b>descargas</b> tienes disponibles los principales plugins.
       Elige los que necesites. Hay de todo y la lista se actualiza periódicamente.
-   </p>
-   <p>
+      <br/>
       Los plugins instalados los tienes en la pestaña <b>plugins</b>. Puedes añadir
       plugins manualmente, si lo deseas, y también puedes activar o desactivar,
       incluso eliminarlos.
-   </p>
-   <p>
+      <br/>
       Además, toda la facturación y contabilidad básica ha sido movida al plugin
       <b>facturacion_base</b>. Puedes descargarlo automáticamente e instalarlo pulsando
       este botón.
@@ -141,17 +144,17 @@
    <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active">
          <a href="#t_paginas" aria-controls="t_paginas" role="tab" data-toggle="tab">
-            <span class="glyphicon glyphicon-object-align-top"></span>
+            <i class="fa fa-check-square"></i>
             <span class="hidden-xs">&nbsp; Menú</span>
          </a>
       </li>
-      <li role="presentation">
+      <li role="presentation" style="display: none">
          <a href="#t_plugins" aria-controls="t_plugins" role="tab" data-toggle="tab">
-            <span class="glyphicon glyphicon-dashboard"></span>
+            <i class="fa fa-puzzle-piece"></i>
             <span class="hidden-xs">&nbsp; Plugins</span>
          </a>
       </li>
-      <li role="presentation">
+      <li role="presentation" style="display: none">
          <a href="#t_descargas" aria-controls="t_descargas" role="tab" data-toggle="tab">
             <span class="glyphicon glyphicon-download-alt"></span>
             <span class="hidden-xs">&nbsp; Descargas</span>
@@ -162,7 +165,7 @@
 
          </a>
       </li>
-      <li role="presentation">
+      <li role="presentation" style="display: none">
          <a href="#t_avanzado" aria-controls="t_avanzado" role="tab" data-toggle="tab">
             <span class="glyphicon glyphicon-wrench"></span>
             <span class="hidden-xs">&nbsp; Avanzado</span>
@@ -417,7 +420,27 @@
                      <?php } ?>
 
                   </td>
-                  <td><?php echo $value1->nombre;?></td>
+                  <td>
+                     <?php echo $value1->nombre;?>
+
+                     <?php if( $value1->imagen ){ ?>
+
+                     <div style="margin-bottom: 5px"></div>
+                        <?php if( !$value1->zip_link ){ ?>
+
+                        <a href="<?php echo $value1->link;?>" target="_blank">
+                           <img src="<?php echo $value1->imagen;?>" alt="<?php echo $value1->nombre;?>" width="80"/>
+                        </a>
+                        <?php }else{ ?>
+
+                        <a href="<?php echo $value1->imagen;?>" target="_blank">
+                           <img src="<?php echo $value1->imagen;?>" alt="<?php echo $value1->nombre;?>" width="80"/>
+                        </a>
+                        <?php } ?>
+
+                     <?php } ?>
+
+                  </td>
                   <td>
                      <?php echo nl2br($value1->descripcion); ?><br/>
                      <?php if( substr($value1->zip_link, -4) == '.zip' ){ ?>
@@ -487,70 +510,89 @@
                         </select>
                      </div>
                   </div>
-                  <div class="form-group col-md-3 col-sm-3">
-                     Portada:
-                     <select name="homepage" class="form-control">
-                        <?php $loop_var1=$fsc->paginas; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        Portada:
+                        <select name="homepage" class="form-control">
+                           <?php $loop_var1=$fsc->paginas; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
 
-                        <option value="<?php echo $value1->name;?>"<?php if( $value1->name==$GLOBALS['config2']['homepage'] ){ ?> selected=""<?php } ?>><?php echo $value1->name;?></option>
+                           <option value="<?php echo $value1->name;?>"<?php if( $value1->name==$GLOBALS['config2']['homepage'] ){ ?> selected=""<?php } ?>><?php echo $value1->name;?></option>
+                           <?php } ?>
+
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        Decimales de los totales:
+                        <select name="nf0" class="form-control">
+                        <?php $loop_var1=$fsc->nf0(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                           <option value="<?php echo $value1;?>"<?php if( $value1==$GLOBALS['config2']['nf0'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
                         <?php } ?>
 
-                     </select>
+                        </select>
+                     </div>
                   </div>
-                  <div class="form-group col-md-3 col-sm-3">
-                     Decimales de los totales:
-                     <select name="nf0" class="form-control">
-                     <?php $loop_var1=$fsc->nf0(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        Decimales de los precios:
+                        <select name="nf0_art" class="form-control">
+                        <?php $loop_var1=$fsc->nf0(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
 
-                        <option value="<?php echo $value1;?>"<?php if( $value1==$GLOBALS['config2']['nf0'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
-                     <?php } ?>
+                           <option value="<?php echo $value1;?>"<?php if( $value1==$GLOBALS['config2']['nf0_art'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
+                        <?php } ?>
 
-                     </select>
+                        </select>
+                     </div>
                   </div>
-                  <div class="form-group col-md-3 col-sm-3">
-                     Decimales de los precios:
-                     <select name="nf0_art" class="form-control">
-                     <?php $loop_var1=$fsc->nf0(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
-
-                        <option value="<?php echo $value1;?>"<?php if( $value1==$GLOBALS['config2']['nf0_art'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
-                     <?php } ?>
-
-                     </select>
-                  </div>
-                  <div class="form-group col-md-3 col-sm-3">
-                     Separador para los Decimales:
-                     <select name="nf1" class="form-control">
-                     <?php $loop_var1=$fsc->nf1(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
-
-                        <option value="<?php echo $key1;?>"<?php if( $key1==$GLOBALS['config2']['nf1'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
-                     <?php } ?>
-
-                     </select>
-                  </div>
-                  <div class="form-group col-md-3 col-sm-3">
-                     Separador para los Millares:
-                     <select name="nf2" class="form-control">
-                        <option value="">(Ninguno)</option>
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        Separador para los Decimales:
+                        <select name="nf1" class="form-control">
                         <?php $loop_var1=$fsc->nf1(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
 
-                        <option value="<?php echo $key1;?>"<?php if( $key1==$GLOBALS['config2']['nf2'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
+                           <option value="<?php echo $key1;?>"<?php if( $key1==$GLOBALS['config2']['nf1'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
                         <?php } ?>
 
-                     </select>
+                        </select>
+                     </div>
                   </div>
-                  <div class="form-group col-md-3 col-sm-3">
-                     Símbolo Divisa:
-                     <select name="pos_divisa" class="form-control">
-                        <option value="right"<?php if( $GLOBALS['config2']['pos_divisa']=='right' ){ ?> selected=""<?php } ?>>123 <?php echo $fsc->simbolo_divisa();?></option>
-                        <option value="left"<?php if( $GLOBALS['config2']['pos_divisa']=='left' ){ ?> selected=""<?php } ?>><?php echo $fsc->simbolo_divisa();?>123</option>
-                     </select>
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        Separador para los Millares:
+                        <select name="nf2" class="form-control">
+                           <option value="">(Ninguno)</option>
+                           <?php $loop_var1=$fsc->nf1(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                           <option value="<?php echo $key1;?>"<?php if( $key1==$GLOBALS['config2']['nf2'] ){ ?> selected=""<?php } ?>><?php echo $value1;?></option>
+                           <?php } ?>
+
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        Símbolo Divisa:
+                        <select name="pos_divisa" class="form-control">
+                           <option value="right"<?php if( $GLOBALS['config2']['pos_divisa']=='right' ){ ?> selected=""<?php } ?>>123 <?php echo $fsc->simbolo_divisa();?></option>
+                           <option value="left"<?php if( $GLOBALS['config2']['pos_divisa']=='left' ){ ?> selected=""<?php } ?>><?php echo $fsc->simbolo_divisa();?>123</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                     <p class="help-block">
+                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                        La configuración de decimales y separadores de decimales y millares
+                        se aplica únicamente a los listados y formatos de impresión. Para los
+                        campos editables se utiliza la configuración del sistema operativo.
+                     </p>
                   </div>
                </div>
                <div class="row bg-info">
                   <div class="col-md-12 col-sm-12">
                      <h2>
-                        <span class="glyphicon glyphicon-globe"></span>
-                        &nbsp; Traducciones:
+                        <i class="fa fa-language"></i>&nbsp; Traducciones:
                      </h2>
                      <p class="help-block">
                         FACTURA y FACTURAS se traducen únicamente en los documentos de ventas.
@@ -583,10 +625,10 @@
                      <div class="form-group">
                         Comprobaciones en la base de datos:
                         <select name="check_db_types" class="form-control">
-                           <option value="true"<?php if( $GLOBALS['config2']['check_db_types']=='true' ){ ?> selected=''<?php } ?>>
+                           <option value="true"<?php if( $GLOBALS['config2']['check_db_types']==1 ){ ?> selected=''<?php } ?>>
                               Comprobar los tipos de las columnas de las tablas
                            </option>
-                           <option value="false"<?php if( $GLOBALS['config2']['check_db_types']=='false' ){ ?> selected=''<?php } ?>>
+                           <option value="false"<?php if( $GLOBALS['config2']['check_db_types']!=1 ){ ?> selected=''<?php } ?>>
                               No comprobar los tipos
                            </option>
                         </select>
@@ -636,7 +678,7 @@
                         Algoritmo de nuevo código:
                         <select name="new_codigo" class="form-control">
                            <option value="eneboo"<?php if( $GLOBALS['config2']['new_codigo']=='eneboo' ){ ?> selected=''<?php } ?>>Compatible con Eneboo</option>
-                           <option value="new"<?php if( $GLOBALS['config2']['new_codigo']=='new' ){ ?> selected=''<?php } ?>>TIPO + EJERCICIO + SERIE + NÚMERO</option>
+                           <option value="new"<?php if( $GLOBALS['config2']['new_codigo']=='new' ){ ?> selected=''<?php } ?>>TIPO + EJERCICIO + <?php  echo FS_SERIE;?> + NÚMERO</option>
                         </select>
                      </div>
                   </div>
