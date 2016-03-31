@@ -210,13 +210,6 @@ class fs_updater
                $zip->close();
                unlink('update.zip');
                
-               /// eliminamos archivos antiguos
-               $this->delTree('base/');
-               $this->delTree('controller/');
-               $this->delTree('extras/');
-               $this->delTree('model/');
-               $this->delTree('raintpl/');
-               $this->delTree('view/');
                
                /// ahora hay que copiar todos los archivos de facturascripts-master a . y borrar
                $this->recurse_copy('Consultorio-master/', '.');

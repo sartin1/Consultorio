@@ -35,10 +35,7 @@ window.print()
 						<strong>Paciente:</strong><br/><?php echo $fsc->servicio->nombrecliente;?>
 
 					</div>
-					<div class="col-xs-4">
-						<strong>Teléfono:</strong><br/><?php echo $fsc->cliente->telefono1;?>
-
-					</div>
+					
 					<br><br><div class="col-xs-4">
 						<strong>Obra social:</strong><br/><?php echo $fsc->cliente->codpago;?>
 
@@ -133,10 +130,7 @@ window.print()
 						<strong>Paciente:</strong><br/><?php echo $fsc->servicio->nombrecliente;?>
 
 					</div>
-					<div class="col-xs-4">
-						<strong>Teléfono:</strong><br/><?php echo $fsc->cliente->telefono1;?>
-
-					</div>
+				
 					<div class="col-xs-4">
 						<strong>Obra social:</strong><br/><?php echo $fsc->cliente->codpago;?>
 
@@ -237,10 +231,7 @@ window.print()
 						<strong>Paciente:</strong><br/><?php echo $fsc->servicio->nombrecliente;?>
 
 					</div>
-					<div class="col-xs-4">
-						<strong>Teléfono:</strong><br/><?php echo $fsc->cliente->telefono1;?>
-
-					</div>
+				
 					<br><br><div class="col-xs-4">
 						<strong>Obra social:</strong><br/><?php echo $fsc->cliente->codpago;?>
 
@@ -335,10 +326,7 @@ window.print()
 						<strong>Paciente:</strong><br/><?php echo $fsc->servicio->nombrecliente;?>
 
 					</div>
-					<div class="col-xs-4">
-						<strong>Teléfono:</strong><br/><?php echo $fsc->cliente->telefono1;?>
-
-					</div>
+			
 					<div class="col-xs-4">
 						<strong>Obra social:</strong><br/><?php echo $fsc->cliente->codpago;?>
 

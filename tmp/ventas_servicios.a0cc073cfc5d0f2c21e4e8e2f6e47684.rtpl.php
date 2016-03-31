@@ -212,7 +212,7 @@
    <li  class="active">
       <a href="#" title="Buscar">
          <span class="glyphicon glyphicon-search"></span>
-         <span class="hidden-xs">&nbsp; Turnos</span>
+         <span class="hidden-xs">&nbsp; urnos</span>
          <span class="hidden-xs badge"><?php echo $fsc->num_resultados;?></span>
       </a>
    </li>

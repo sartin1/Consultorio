@@ -16,13 +16,6 @@
          window.location.href = '{$fsc->url()}&delete_plugin='+name+'#plugins';
       }
    }
-   function descargar_plugin_inestable(id)
-   {
-      if( confirm("Este plugin está marcado como inestable ¿Estas seguro de que quieres descargarlo?") )
-      {
-         window.location.href = '{$fsc->url()}&caca={$fsc->random_string(4)}&download2='+id+'#plugins';
-      }
-   }
    $(document).ready(function() {
       
       {if="$fsc->step=='1'"}
@@ -51,11 +44,11 @@
 {if="!$fsc->step"}
 <div class="well">
    <div class="page-header" style="margin-top: 0px;">
-      <h1>¡Bienvenido a FacturaScripts {$fsc->version()}!</h1>
+      <h1>¡Bienvenido a Sartin Soft{$fsc->version()}!</h1>
    </div>
    <p>
       Ya tienes instalado el núcleo. Como ves, el núcleo permite gestionar páginas,
-      plugins y usuarios.
+      y usuarios.
    </p>
    <a href="#" class="btn btn-sm btn-info" onclick="fs_marcar_todo();f_enable_pages.submit();">
       <span class="glyphicon glyphicon-ok"></span> &nbsp; Continuar
@@ -64,27 +57,13 @@
 {elseif="$fsc->step=='1'"}
 <div class="well">
    <div class="page-header" style="margin-top: 0px;">
-      <h1>Plugins</h1>
+      <h1>Instalación Completada!</h1>
    </div>
    <p>
-      El núcleo solamente se encarga de la gestión de usuarios, plugins y páginas.
-      Para todo lo demás tienes los plugins.
-      En la pestaña <b>descargas</b> tienes disponibles los principales plugins.
-      Elige los que necesites. Hay de todo y la lista se actualiza periódicamente.
+      Ya se completó la isntalación de Sartin Soft! Espero que sea de su agrado y cumpla con sus expectativas! 
+	  Suerte!
    </p>
-   <p>
-      Los plugins instalados los tienes en la pestaña <b>plugins</b>. Puedes añadir
-      plugins manualmente, si lo deseas, y también puedes activar o desactivar,
-      incluso eliminarlos.
-   </p>
-   <p>
-      Además, toda la facturación y contabilidad básica ha sido movida al plugin
-      <b>facturacion_base</b>. Puedes descargarlo automáticamente e instalarlo pulsando
-      este botón.
-   </p>
-   <a href="{$fsc->url()}&caca={$fsc->random_string(4)}&download=facturacion_base#plugins" class="btn btn-sm btn-info">
-      <span class="glyphicon glyphicon-download-alt"></span> &nbsp; Descargar facturacion_base
-   </a>
+
 </div>
 {else}
 <div class="container-fluid" style="margin-top: 10px;">
@@ -104,17 +83,7 @@
             </a>
             {/if}
          </div>
-         <div class="btn-group">
-            <a class="btn btn-sm {if="$fsc->check_for_updates()"}btn-info{else}btn-default{/if}" href="updater.php" title="Actualizador">
-               <span class="glyphicon glyphicon-upload"></span>
-               <span class="hidden-xs">&nbsp; Actualizador</span>
-            </a>
-            {loop="$fsc->extensions"}
-               {if="$value->type=='button'"}
-               <a href="index.php?page={$value->from}{$value->params}" class="btn btn-sm btn-default">{$value->text}</a>
-               {/if}
-            {/loop}
-         </div>
+
       </div>
       <div class="col-xs-6 text-right">
          <h2 style="margin-top: 0px;">Panel de control</h2>
@@ -131,27 +100,7 @@
             <span class="hidden-xs">&nbsp; Menú</span>
          </a>
       </li>
-      <li role="presentation">
-         <a href="#t_plugins" aria-controls="t_plugins" role="tab" data-toggle="tab">
-            <span class="glyphicon glyphicon-dashboard"></span>
-            <span class="hidden-xs">&nbsp; Plugins</span>
-         </a>
-      </li>
-      <li role="presentation">
-         <a href="#t_descargas" aria-controls="t_descargas" role="tab" data-toggle="tab">
-            <span class="glyphicon glyphicon-download-alt"></span>
-            <span class="hidden-xs">&nbsp; Descargas</span>
-            {if="$fsc->new_downloads>0"}
-            <span class="badge" title="Hay {$fsc->new_downloads} nuevas descargas">{$fsc->new_downloads}</span>
-            {/if}
-         </a>
-      </li>
-      <li role="presentation">
-         <a href="#t_avanzado" aria-controls="t_avanzado" role="tab" data-toggle="tab">
-            <span class="glyphicon glyphicon-wrench"></span>
-            <span class="hidden-xs">&nbsp; Avanzado</span>
-         </a>
-      </li>
+      
    </ul>
    <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="t_paginas">
@@ -175,8 +124,8 @@
                         {/loop}
                         -->
                         {if="$sin_activar>0"}
-                        <button class="btn btn-sm btn-warning" type="button" onclick="fs_marcar_todo()" title="Hay {$sin_activar} página(s) no activa(s).">
-                           <b>{$sin_activar}</b>
+                        <button class="btn btn-sm btn-default" type="button" title="Hay {$sin_activar} página(s) no activa(s).">
+                           <span class="badge">{$sin_activar}</span>
                         </button>
                         {/if}
                      </div>
@@ -196,31 +145,27 @@
                      <tr>
                         <th class="text-left">Página</th>
                         <th class="text-left">Menú</th>
+                        <th class="text-left">Versión</th>
+                        <th class="text-center">Importante</th>
                         <th class="text-center">Existe</th>
                      </tr>
                   </thead>
                   {loop="$fsc->paginas"}
                   <tr{if="!$value->exists"} class="danger"{/if}>
                      <td>
-                        <input class="checkbox-inline" type="checkbox" name="enabled[]" value="{$value->name}"{if="$value->enabled"} checked=""{/if}/>
+                        <input class="checkbox-inline" type="checkbox" name="enabled[]" value="{$value->name}"{if="$value->enabled"} checked="checked"{/if}/>
                         &nbsp; <a target="_blank" href="{$value->url()}">{$value->name}</a>
                      </td>
                      <td>
-                        {if="$value->important"}
-                        <span class="glyphicon glyphicon-star"></span> » {$value->title}
-                        {elseif="$value->show_on_menu"}
+                        {if="$value->show_on_menu"}
                         <span class="text-capitalize">{$value->folder}</span> » {$value->title}
                         {else}
                         -
                         {/if}
                      </td>
-                     <td class="text-center">
-                        {if="$value->exists"}
-                        <span class="glyphicon glyphicon-ok"></span>
-                        {else}
-                        <span class="glyphicon glyphicon-exclamation-sign" title="No se encuentra el controlador o pertenece a un plugin inactivo"></span>
-                        {/if}
-                     </td>
+                     <td>{$value->version}</td>
+                     <td class="text-center">{if="$value->important"}<span class="glyphicon glyphicon-ok"></span>{/if}</td>
+                     <td class="text-center">{if="$value->exists"}<span class="glyphicon glyphicon-ok"></span>{/if}</td>
                   </tr>
                   {/loop}
                </table>
@@ -356,7 +301,7 @@
                </tr>
                {/loop}
                {loop="$fsc->download_list2"}
-               <tr{if="file_exists('plugins/'.$value->nombre)"} class="success"{elseif="!$value->estable"} class="danger"{elseif="$value->nuevo"} class="info"{/if}>
+               <tr{if="file_exists('plugins/'.$value->nombre)"} class="success"{elseif="!$value->estable"} class="warning"{elseif="$value->nuevo"} class="info"{/if}>
                   <td>
                      {if="!$value->estable"}
                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" title="Todavía en desarrollo. Inestable."></span>
@@ -375,16 +320,10 @@
                      <a href="{$fsc->url()}&caca={$fsc->random_string(4)}#plugins" class="btn btn-xs btn-default">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> &nbsp; Instalado
                      </a>
-                     {elseif="$value->zip_link"}
-                        {if="$value->estable"}
-                        <a href="{$fsc->url()}&caca={$fsc->random_string(4)}&download2={$value->id}#plugins" class="btn btn-xs btn-primary">
-                           <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> &nbsp; Descargar
-                        </a>
-                        {else}
-                        <a href="#" class="btn btn-xs btn-primary" onclick="descargar_plugin_inestable('{$value->id}')">
-                           <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> &nbsp; Descargar
-                        </a>
-                        {/if}
+                     {elseif="substr($value->zip_link, -4) == '.zip'"}
+                     <a href="{$fsc->url()}&caca={$fsc->random_string(4)}&download2={$value->id}#plugins" class="btn btn-xs btn-primary">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> &nbsp; Descargar
+                     </a>
                      {else}
                      <a href="{$value->link}" target="_blank" class="btn btn-xs btn-info">
                         <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> &nbsp; Comprar
@@ -425,18 +364,10 @@
                      </select>
                   </div>
                   <div class="form-group col-md-3 col-sm-3">
-                     Decimales de los totales:
+                     Decimales:
                      <select name="nf0" class="form-control">
                      {loop="$fsc->nf0()"}
                         <option value="{$value}"{if="$value==$GLOBALS['config2']['nf0']"} selected=""{/if}>{$value}</option>
-                     {/loop}
-                     </select>
-                  </div>
-                  <div class="form-group col-md-3 col-sm-3">
-                     Decimales de los precios:
-                     <select name="nf0_art" class="form-control">
-                     {loop="$fsc->nf0()"}
-                        <option value="{$value}"{if="$value==$GLOBALS['config2']['nf0_art']"} selected=""{/if}>{$value}</option>
                      {/loop}
                      </select>
                   </div>
@@ -467,10 +398,7 @@
                </div>
                <div class="row bg-info">
                   <div class="col-md-12 col-sm-12">
-                     <h2>
-                        <span class="glyphicon glyphicon-globe"></span>
-                        &nbsp; Traducciones:
-                     </h2>
+                     <h2>Traducciones:</h2>
                      <p class="help-block">
                         FACTURA y FACTURAS se traducen únicamente en los documentos de ventas.
                         FACTURA_SIMPLIFICADA se utiliza en los tickets.
@@ -482,7 +410,7 @@
                   <div class="col-md-2 col-sm-3">
                      <div class="form-group">
                         <span class="text-uppercase">{$value['nombre']}:</span>
-                        <input class="form-control" type="text" name="{$value['nombre']}" value="{$value['valor']}" autocomplete="off"/>
+                        <input class="form-control" type="text" name="{$value['nombre']}" value="{$value['valor']}"/>
                      </div>
                   </div>
                   {/loop}
@@ -507,10 +435,6 @@
                               No comprobar los tipos
                            </option>
                         </select>
-                        <p class="help-block">
-                           Tendrás que <a href="index.php?page=admin_info">limpiar la caché</a>
-                           para que comiencen las comprobaciones.
-                        </p>
                      </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
